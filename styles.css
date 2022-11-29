@@ -5,6 +5,10 @@ body {
   padding: 0;
 }
 
+h4, h3 {
+  margin-top: 0;
+}
+
 #products-container {
   display: flex;
   flex-flow: row wrap;
@@ -14,6 +18,13 @@ body {
   text-align: center;
 }
 
+#products-container > div {
+  padding: 1em;
+  border: solid 1px black;
+  border-radius: 1em;
+  height: fit-content;
+}
+
 #products-container button {
   margin: 0 0.5em;
 }
@@ -21,11 +32,14 @@ body {
 .basket-container {
   padding: 1em;
   display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .basket-inner-container {
   border-left: solid 1px black;
   padding: 1em 5em;
+}
+
+td {
+  padding: 0.5em 1em;
+  border: solid 1px black;
 }
