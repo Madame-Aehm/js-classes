@@ -1,0 +1,31 @@
+body {
+  display: grid;
+  grid-template-columns: 70% 30%;
+  margin: 0;
+  padding: 0;
+}
+
+#products-container {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  padding: 1em;
+  gap: 2em;
+  text-align: center;
+}
+
+#products-container button {
+  margin: 0 0.5em;
+}
+
+.basket-container {
+  padding: 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.basket-inner-container {
+  border-left: solid 1px black;
+  padding: 1em 5em;
+}

@@ -24,6 +24,10 @@ class Product {
       this.quantity -= 1
     }
   }
+
+  returnOne() {
+    this.quantity += 1
+  }
 }
 
 class Basket {
@@ -34,35 +38,39 @@ class Basket {
   addProduct(toAdd) {
     this.products.push(toAdd);
   }
+
+  removeProduct(toRemove) {
+    const remove = this.products.findIndex((e) => e.name === toRemove.name);
+    this.products.splice(remove, 1);
+  }
 }
 
 let myProducts = [
-  new Product("apples", 40, 2),
-  new Product("lemons", 32, 38),
-  new Product("mangos", 44, 67),
-  new Product("pineapples", 32, 88),
+  new Product("apples", 0.80, 2),
+  new Product("lemons", 0.60, 38),
+  new Product("mangos", 1.20, 67),
+  new Product("pineapples", 3.00, 88),
 ];
 
 window.onload = () => {
   let basket = new Basket();
-  console.log(basket);
-
   const productsContainer = document.getElementById("products-container");
+
   myProducts.forEach((product) => {
     const itemDiv = document.createElement('div');
     productsContainer.appendChild(itemDiv);
     const itemName = document.createElement('h4');
-    itemName.innerHTML = `Product: ${product.name}`;
-    itemDiv.appendChild(itemName);
+    itemName.innerHTML = product.name;
     const itemPrice = document.createElement('p');
     itemPrice.innerHTML = `Price: $${product.price}`
-    itemDiv.appendChild(itemPrice);
     const itemQuantity = document.createElement('p');
-    itemQuantity.innerHTML = `Quantity: ${product.quantity}`;
-    itemDiv.appendChild(itemQuantity);
+    itemQuantity.innerHTML = `Stock: ${product.quantity}`;
     const addOneButton = document.createElement('button');
-    addOneButton.innerHTML = 'Add one'
-    itemDiv.appendChild(addOneButton);
+    const removeOneButton = document.createElement('button');
+    addOneButton.innerHTML = '+';
+    removeOneButton.innerHTML = '-';
+    removeOneButton.setAttribute('disabled', '');
+    itemDiv.append(itemName, itemPrice, itemQuantity, addOneButton, removeOneButton);
 
     addOneButton.addEventListener("click", () => {
       removeFromProduct(product, itemQuantity, basket);
@@ -70,30 +78,76 @@ window.onload = () => {
         addOneButton.setAttribute('disabled', '');
       }
       addToBasket(product, basket);
+      if (!basket.products.includes(product)) {
+        removeOneButton.setAttribute('disabled', '');
+      } else {
+        removeOneButton.removeAttribute('disabled');
+      }
+    })
+
+    removeOneButton.addEventListener("click", () => {
+      returnProduct(product, itemQuantity, basket);
+      if (product.quantity > 0) {
+        addOneButton.removeAttribute('disabled')
+      }
+      removeFromBasket(product, basket);
+      if (!basket.products.includes(product)) {
+        removeOneButton.setAttribute('disabled', '');
+      }
     })
   })
+
+  displayTotal(basket);
 }
 
 const removeFromProduct = (product, itemQuanity) => {
   product.removeOne();
-  itemQuanity.innerHTML = `Quantity: ${product.quantity}`;
+  itemQuanity.innerHTML = `Stock: ${product.quantity}`;
+}
+
+const returnProduct = (product, itemQuanity) => {
+  product.returnOne();
+  itemQuanity.innerHTML = `Stock: ${product.quantity}`;
 }
 
 const addToBasket = (product, basket) => {
   basket.addProduct(product);
-  const basketTable = document.getElementById('basket-table');
-  const existingRow = document.getElementById(product.name);
-  if (!existingRow) {
-    const newRow = document.createElement('tr');
-    newRow.setAttribute('id', product.name);
-    basketTable.appendChild(newRow);
-    const productCell = document.createElement('td');
-    productCell.innerHTML = product.name;
-    const quantityCell = document.createElement('td');
-    quantityCell.innerHTML = product.quantity;
-    newRow.append(productCell, quantityCell);
-  }
-  
+  displayBasket(basket);
+  displayTotal(basket);
+}
 
+const removeFromBasket = (product, basket) => {
+  basket.removeProduct(product);
+  displayBasket(basket);
+  displayTotal(basket);
+}
+
+const displayBasket = (basket) => {
+  const basketContent = {};
+  basket.products.forEach((product) => {
+    basketContent[product.name] = (basketContent[product.name] || 0) + 1
+  })
+  const contentArray = Object.entries(basketContent);
+  const basketTable = document.getElementById('basket-table');
+  basketTable.innerHTML = "";
+  contentArray.forEach((e) => {
+    const row = document.createElement('tr');
+    basketTable.appendChild(row);
+    const nameCell = document.createElement('td');
+    const quantityCell = document.createElement('td');
+    row.append(nameCell, quantityCell);
+    nameCell.innerHTML = e[0];
+    quantityCell.innerHTML = e[1];
+  })
+}
+
+const displayTotal = (basket) => {
+  const totalSpan = document.getElementById("total");
+  let total = 0;
+  for (let i = 0; i < basket.products.length; i++) {
+    total += basket.products[i].price * 10;
+  }
+  total /= 10;
+  totalSpan.innerHTML = total.toString();
 }
 
