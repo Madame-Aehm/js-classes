@@ -43,7 +43,6 @@ class Tv {
 
 window.onload = () => {
   const telly = new Tv("Panasonic");
-  console.log(telly);
   displayBrand(telly);
   displayVolume(telly);
   displayChannel(telly);
@@ -98,8 +97,6 @@ const reset = (tv) => {
   displayChannel(tv);
   displayVolume(tv);
 }
-
-
 
 
 //1) Create a TV class with properties like brand, channel and volume.
